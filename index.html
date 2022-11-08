@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<!-- Head ======================================== -->
+	<head>
+		<!-- Meta ==================================== -->
+		<title>Wilderness</title>
+
+		<!-- Style =================================== -->
+		<link rel="stylesheet" href="css/style.css">
+
+		<!-- Scripts ================================= -->
+		<script src="js/frameworks/jquery-3.6.1.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/gsap@3.0.4/dist/gsap.min.js"></script>
+		<script src="js/frameworks/pixi.min.js"></script>
+
+
+		<!-- Game Modules -->
+		<script src="js/game/map.js"></script>
+		<script src="js/game/stats.js"></script>
+		<script src="js/game/render.js"></script>
+		<script src="js/game/camera.js"></script>
+		<script src="js/game/player.js"></script>
+		<script src="js/game/network.js"></script>
+		<script src="js/game/craft.js"></script>
+		<script src="js/game/card.js"></script>
+
+		<!-- Game -->
+		<script src="js/main.js"></script>
+	</head>
+	
+	<!-- Body ======================================== -->
+	<body>
+		<div class="wrapper">
+			<header class="header">
+				<h1 class="game_headline">
+					.:: Wilderness v1.0 ::.
+				</h1>
+			</header>
+
+			<div class="game_container">
+				<div class="game_main">
+					<div class="game_menu">
+						<div class="game_score">Score: 2000</div>
+						<div class="game_control">E</div>
+						<div class="clear"></div>
+					</div>
+
+					<div class="game_render" id="game_output">
+						Loading...
+					</div>
+				</div>
+			</div>
+
+			<footer class="footer">
+				<div class="content">
+					Programming Assignment & Master Practical Part - MA1 20222
+				</div>
+			</footer>
+		</div>
+
+		<script>
+
+			// Run Wilderness
+			setInterval(function(){
+				//while(!game.triggerEnd()){
+					game.IDLE();
+				//}
+			},2000);
+
+
+		</script>
+	</body>
+</html> 
+<!-- =========================================== EOF = -->
