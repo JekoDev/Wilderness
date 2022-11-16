@@ -7,6 +7,7 @@
 	var app = new PIXI.Application({width:960, height:540});
 	var sprite = PIXI.Sprite.from('data/gfx/test.jpg');
 	var hexagon = PIXI.Texture.from('data/gfx/hex.png');
+	var player = PIXI.Sprite.from('data/gfx/player.png');
 	app.stage.addChild(sprite);
 	sprite.transform.position.x = 100;
 

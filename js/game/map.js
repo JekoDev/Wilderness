@@ -2,15 +2,12 @@
 	Wilderness
 =============================================================== */
 
-var wilderness_width = 100;
-var wilderness_height = 100;
-
-var _wilderness_mapcontainer = new PIXI.Container();
 
 class Tile{
 
 	type = 0;
 	detailsdummy = 0;
+	hexagon = null;
 
 	constructor(type){
 		this.type = type;
@@ -64,6 +61,13 @@ class Map{
 				hex.alpha = Math.random();
 				_wilderness_mapcontainer.addChild(hex);
 
+				this.tiles[x][y] = new Tile();
+				this.tiles[x][y].hex = hex;
+
+				hex.interactive = true;
+				hex.buttonMode = true;
+				hex.on("pointerup", _hexclick_onDragStart);
+				
 				//Generation goes here
 			}
 		}
@@ -100,6 +104,17 @@ class Map{
 	
 //============================================================= Hexagon Move Functions
 
+	function _hexclick_onDragStart(event) {
+		for(var y=0; y<wilderness_height; y++){
+			for(var x=0; x<wilderness_width; x++){
+				if (wilderness_map.tiles[x][y].hex == this){
+					wilderness_player.setPos(x,y);
+					return;
+				}
+			}
+		}
+	}
+
 
 	function _hexmove_onDragStart(event) {
   
@@ -129,6 +144,7 @@ class Map{
 	    vy = (newPosition.y - this.lastPosition.y);
 	    this.lastPosition = newPosition;
 
+	   
 	  }
 	}
 
@@ -179,6 +195,6 @@ class Map{
 	});
 
 
-	var wilderness_map = new Map(wilderness_width, wilderness_height);
+	wilderness_map = new Map(wilderness_width, wilderness_height);
 
 //============================================================= EOF
