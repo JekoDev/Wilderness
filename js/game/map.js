@@ -7,7 +7,8 @@ class Tile{
 
 	type = 0;
 	detailsdummy = 0;
-	hexagon = null;
+	hexagon = 0;
+	hex = null;
 
 	constructor(type){
 		this.type = type;
@@ -37,9 +38,11 @@ class Map{
 		wilderness_width  = width;
 		wilderness_height = height;
 
-		for (this.tiles=[]; this.tiles.push([])<this.height;);
-		//randomness function for details goes heeeeere
-		//later share over network
+		if (this.tiles.count == null){
+			for (this.tiles=[]; this.tiles.push([])<this.height;);
+			//randomness function for details goes heeeeere
+			//later share over network
+		}
 
 		app.stage.addChild(_wilderness_mapcontainer);
 
@@ -48,7 +51,45 @@ class Map{
 				var triggerx = 0;
 				if(x%2 == 1) triggerx = 1;
 
-				var hex = new PIXI.Sprite(hexagon);
+				if(this.tiles[x][y] == null){
+	 			
+	 				this.tiles[x][y] = new Tile();
+					this.tiles[x][y].hex = hex;
+				
+				}
+
+
+				switch(this.tiles[x][y].hexagon){
+					case 0: //Flat
+						var hex = new PIXI.Sprite(hexagon_flat);
+						break;
+
+					case 1: //Mountain
+						var hex = new PIXI.Sprite(hexagon_mountain);
+						break;
+
+					case 2: //Forest
+						var hex = new PIXI.Sprite(hexagon_forest);
+						break;
+
+					case 3: //Water
+						var hex = new PIXI.Sprite(hexagon_water);
+						break;
+
+					case 4: //End
+						var hex = new PIXI.Sprite(hexagon_end);
+						break;
+
+					case 5: //Start
+						var hex = new PIXI.Sprite(hexagon_start);
+						break;
+
+					case 6: //Mountain_Dead
+						var hex = new PIXI.Sprite(hexagon_mountain_dead);
+						break;
+				}
+
+
 				if (triggerx == 0){
 					hex.transform.position.y = y*90 - 45;
 				}else{
@@ -58,11 +99,9 @@ class Map{
 				hex.transform.position.x = x*80;
 				hex.transform.scale.x = 0.15;
 				hex.transform.scale.y = 0.15;
-				hex.alpha = Math.random();
+				//hex.alpha = Math.random();
 				_wilderness_mapcontainer.addChild(hex);
 
-				this.tiles[x][y] = new Tile();
-				this.tiles[x][y].hex = hex;
 
 				hex.interactive = true;
 				hex.buttonMode = true;
@@ -100,6 +139,11 @@ class Map{
 
 		return null;
 	}
+
+	//Set MapData Json
+	setData(data){
+		this.tiles = data;
+	}
 }
 	
 //============================================================= Hexagon Move Functions
@@ -108,11 +152,73 @@ class Map{
 		for(var y=0; y<wilderness_height; y++){
 			for(var x=0; x<wilderness_width; x++){
 				if (wilderness_map.tiles[x][y].hex == this){
-					wilderness_player.setPos(x,y);
+		//			wilderness_player.setPos(x,y);
+					var hextype = parseInt($(".devtool_bttn.mla.active").first().attr("data"));
+					console.log(hextype);
+					_wilderness_mapcontainer.removeChild(wilderness_map.tiles[x][y].hex);
+					switch(hextype){
+						case 0: //Flat
+							var hex = new PIXI.Sprite(hexagon_flat);
+							break;
+
+						case 1: //Mountain
+							var hex = new PIXI.Sprite(hexagon_mountain);
+							break;
+
+						case 2: //Forest
+							var hex = new PIXI.Sprite(hexagon_forest);
+							break;
+
+						case 3: //Water
+							var hex = new PIXI.Sprite(hexagon_water);
+							break;
+
+						case 4: //End
+							var hex = new PIXI.Sprite(hexagon_end);
+							break;
+
+						case 5: //Start
+							var hex = new PIXI.Sprite(hexagon_start);
+							break;
+
+						case 6: //Mountain_Dead
+							var hex = new PIXI.Sprite(hexagon_mountain_dead);
+							break;
+					}
+
+					wilderness_map.tiles[x][y].hex = hex;
+
+
+					var triggerx = 0;
+					if((x-1)%2 == 1) triggerx = 1;
+
+					if (triggerx == 0){
+						hex.transform.position.y = y*90 - 45;
+					}else{
+						hex.transform.position.y = y*90;
+					}
+
+					hex.transform.position.x = (x-1)*80;
+					hex.transform.scale.x = 0.15;
+					hex.transform.scale.y = 0.15;
+					//hex.alpha = Math.random();
+					_wilderness_mapcontainer.addChild(hex);
+
+
+					hex.interactive = true;
+					hex.buttonMode = true;
+					hex.on("pointerup", _hexclick_onDragStart);
+
+
+					//$("#programming_debug").val(JSON.stringify(wilderness_map.tiles));
+					//Cycling Shit Error
+
 					return;
 				}
 			}
 		}
+	    
+	  
 	}
 
 
@@ -124,6 +230,9 @@ class Map{
 	  
 	  this.data = event.data;  
 	  this.lastPosition = this.data.getLocalPosition(this.parent); 
+
+
+
 	}
 
 	var vx, vy;
@@ -165,7 +274,6 @@ class Map{
 	    onUpdate: () => {
 	    	if (this.position.x > 0) this.position.x = 0;
 	    	if (this.position.y > 0) this.position.y = 0;
-	    	
 	    }
 	  });
 	}

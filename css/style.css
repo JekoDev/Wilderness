@@ -101,6 +101,46 @@ html, div, footer, header{
 	padding:10px;
 }
 
+
+#programming_tools{
+	position:fixed;
+	top:20px;
+	left:20px;
+
+	padding:20px;
+	border-radius:5px;
+	background:#000;
+	padding:10px;
+}
+
+
+#programming_debug{
+	padding:10px;
+	background:#111;
+	border:1px solid #222;
+	margin-top:10px;
+}
+
+.devtool_bttn{
+	border:1px solid #222;
+	background:#111;
+	padding:10px;
+	margin:10px;
+}
+
+.devtool_bttn:hover{
+	border:1px solid #333;
+	background:#222;
+	cursor:pointer;
+}
+
+.devtool_bttn.active{
+	border:1px solid red;
+	background:#333;
+}
+
+
+
 /* =================================== Responsive ========== */
 
 @media (max-height: 1000px) {

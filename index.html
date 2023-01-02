@@ -62,14 +62,36 @@
 			</footer>
 		</div>
 
+		<div id="programming_tools">
+			<div>Programming Tools</div>
+			<div id="programming_content">
+				<div class="mla devtool_bttn" data="5">Start</div>	
+				<div class="mla devtool_bttn" data="1">Mountain</div>	
+				<div class="mla devtool_bttn active" data="0">Flat</div>	
+				<div class="mla devtool_bttn" data="2">Forest</div>	
+				<div class="mla devtool_bttn" data="3">Water</div>	
+				<div class="mla devtool_bttn" data="4">End</div>	
+				<div class="mla devtool_bttn" data="6">High Mountain</div>	
+				<input id="programming_debug" value="1001010101">
+				</input>
+			</div>
+		</div>
+
 		<script>
 
-			// Run Wilderness
-			setInterval(function(){
-				//while(!game.triggerEnd()){
-					game.IDLE();
-				//}
-			},2000);
+			$(document).ready(function(){
+
+				$(".devtool_bttn").click(function(){
+
+					$(".devtool_bttn").removeClass("active");
+					$(this).addClass("active");
+
+				});
+
+				$("#programming_debug").click(function(){
+
+				});
+			});
 
 
 		</script>
