@@ -73,6 +73,7 @@
 				<div class="mla devtool_bttn" data="4">End</div>	
 				<div class="mla devtool_bttn" data="6">High Mountain</div>	
 				<input id="programming_debug" value="1001010101">
+				<div id="devtool_bttn_load" class="mlb devtool_bttn">Load</div>	
 				</input>
 			</div>
 		</div>
@@ -81,15 +82,15 @@
 
 			$(document).ready(function(){
 
-				$(".devtool_bttn").click(function(){
+				$(".devtool_bttn.mla").click(function(){
 
-					$(".devtool_bttn").removeClass("active");
+					$(".devtool_bttn.mla").removeClass("active");
 					$(this).addClass("active");
 
 				});
 
-				$("#programming_debug").click(function(){
-
+				$("#devtool_bttn_load").click(function(){
+					wilderness_map.setData(JSON.parse($("#programming_debug").val()));
 				});
 			});
 
