@@ -20,11 +20,12 @@
 		<script src="js/main.js"></script>
 
 		<!-- Game Modules -->
+		<script src="js/game/_map_data.js"></script>
 		<script src="js/game/map.js"></script>
 		<script src="js/game/stats.js"></script>
+		<script src="js/game/player.js"></script>
 		<script src="js/game/render.js"></script>
 		<script src="js/game/camera.js"></script>
-		<script src="js/game/player.js"></script>
 		<script src="js/game/network.js"></script>
 		<script src="js/game/craft.js"></script>
 		<script src="js/game/card.js"></script>
@@ -62,37 +63,7 @@
 			</footer>
 		</div>
 
-		<div id="programming_tools">
-			<div>Programming Tools</div>
-			<div id="programming_content">
-				<div class="mla devtool_bttn" data="5">Start</div>	
-				<div class="mla devtool_bttn" data="1">Mountain</div>	
-				<div class="mla devtool_bttn active" data="0">Flat</div>	
-				<div class="mla devtool_bttn" data="2">Forest</div>	
-				<div class="mla devtool_bttn" data="3">Water</div>	
-				<div class="mla devtool_bttn" data="4">End</div>	
-				<div class="mla devtool_bttn" data="6">High Mountain</div>	
-				<input id="programming_debug" value="1001010101">
-				<div id="devtool_bttn_load" class="mlb devtool_bttn">Load</div>	
-				</input>
-			</div>
-		</div>
-
 		<script>
-
-			$(document).ready(function(){
-
-				$(".devtool_bttn.mla").click(function(){
-
-					$(".devtool_bttn.mla").removeClass("active");
-					$(this).addClass("active");
-
-				});
-
-				$("#devtool_bttn_load").click(function(){
-					wilderness_map.setData(JSON.parse($("#programming_debug").val()));
-				});
-			});
 
 
 		</script>

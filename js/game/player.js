@@ -9,18 +9,19 @@ class Player{
 	constructor(x,y){
 		this.x = x;
 		this.y = y;
-		this.setPos(x,y);	
-		console.log("DJSADJSALKDJASLKDJ");	
+		_wilderness_mapcontainer.addChild(player);
 	}
 
 	setPos(x, y){
-		_wilderness_mapcontainer.addChild(player);
+		this.x = x;
+		this.y = y;
+		
 		player.transform.scale.x = 0.1;
 		player.transform.scale.y = 0.1;
-		player.transform.position.x =  x * 80 + 45 -5;
-		player.transform.position.y =  y * 90 - 10;
+		player.transform.position.x =  x * 80   + 45 -5;
+		player.transform.position.y =  y * 90  - 10 ;
 		if (x%2 == 1){
-			player.transform.position.y += 45;
+			player.transform.position.y += 45 ;
 		}
 	}
 }
