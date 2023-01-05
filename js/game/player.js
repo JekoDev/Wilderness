@@ -43,7 +43,7 @@ class Player{
 			toY += 45 ;
 		}
 
-		gsap.to(player.transform.position, {duration:1, x:toX, y:toY});
+		gsap.to(player.transform.position, {duration:1.5, x:toX, y:toY});
 	}
 }
 
