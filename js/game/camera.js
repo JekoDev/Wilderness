@@ -36,6 +36,19 @@ class Camera{
 		_wilderness_mapcontainer.transform.position.x = -this.x;
 		_wilderness_mapcontainer.transform.position.y = -this.y;
 	}
+
+	centerTileEase(x,y){
+		var triggerx = 0;
+		if(x%2 == 1) triggerx = 1;
+
+		this.x = x*80 * this.zoom - (app.renderer.width-(80*this.zoom) -50)/2;
+		this.y = y*90 * this.zoom - (app.renderer.height-(90*this.zoom) +240)/2;
+		//Do not know why there has to be this weird numbers (50,240) to correct the center, but it works...
+
+		if (triggerx==1) this.y += 45 * this.zoom;
+
+		gsap.to(_wilderness_mapcontainer.transform.position, {duration:1, x:-this.x, y:-this.y});
+	}
 }
 
 var wilderness_camera = new Camera();

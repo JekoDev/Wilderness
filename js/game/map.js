@@ -180,12 +180,20 @@ class Map{
 			for(var x=0; x<wilderness_width; x++){
 				if (wilderness_map.tiles[x][y].hex == this){
 					x -= 1; //This confuses me...
+					var tx = 0;
+					if(x%2 == 1) tx = 1;
 					if (wilderness_map.tiles[x][y].type == 3) return; //water
 					if (wilderness_map.tiles[x][y].type == 6) return; //highmountain
-					//if (wilderness_player.x+1 == x ^ wilderness_player.x-1 == x ^ wilderness_player.y+1 == y ^ wilderness_player.y-1 == y){
-						wilderness_player.setPos(x,y);
-						wilderness_camera.centerTile(x,y);
-					//}
+					var px = wilderness_player.x;
+					var py = wilderness_player.y;
+					if (((px+1 == x || px-1 == x) && (y==py || (y+1==py && tx==1) || (y-1==py && tx==0))) || (py+1 == y && px == x)  ||  (py-1 == y && px == x)){
+						wilderness_player.setPosEase(x,y);
+						wilderness_camera.centerTileEase(x,y);
+					}else{
+						return;
+					}
+					if (wilderness_map.tiles[x][y].type == 4) game.triggerEnd(); //Win
+					game.endTurn();
 					return;
 				}
 			}
