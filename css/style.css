@@ -160,6 +160,18 @@ html, div, footer, header{
 	color:yellow;
 }
 
+#Items{
+	position:fixed;
+	top:150px;
+	left:20px;
+	background:#111;
+	padding:20px;
+	border-radius: 5px;
+}
+
+#item_template{
+	display:none;
+}
 
 /* =================================== Responsive ========== */
 

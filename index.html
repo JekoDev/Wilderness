@@ -66,11 +66,46 @@
 		<div id="GUI">
 			<div id="player_hunger">10</div>
 			<div id="player_thirst">10</div>
-			<div id="player_energy">10</div>
+			<div id="player_energy">20</div>
+		</div>
+
+		<div id="Items">
+			Your Items:
+			<div id="items_list">
+				<div class="devtool_bttn item_use" data="water">
+					Water
+				</div>
+
+				<div class="devtool_bttn item_use" data="berry">
+					Berry
+				</div>
+
+
+				<div id="item_template" class="devtool_bttn item_use">
+					
+				</div>
+			</div>
 		</div>
 
 		<script>
+			$(".item_use").click(function(){
+				var type = $(this).attr("data");
 
+				switch(type){
+					case "water":
+						wilderness_player.thirst += 3;
+						break;
+
+					case "berry":
+						wilderness_player.hunger += 3;
+						break;
+				}
+
+				game.endTurn();
+
+
+				$(this).remove();
+			});
 
 		</script>
 	</body>

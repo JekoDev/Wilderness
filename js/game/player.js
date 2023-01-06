@@ -8,7 +8,7 @@ class Player{
 
 	thirst = 10;
 	hunger = 10;
-	energy = 10;
+	energy = 20;
 
 	constructor(x,y){
 		this.x = x;
