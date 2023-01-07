@@ -47,11 +47,20 @@
 					<div class="game_menu">
 						<div class="game_score">Round: 1</div>
 						<div class="game_control">E</div>
+						<div class="item-wrapper">
+							<div id="Items" class="items">
+								<div id="items_list">
+									<div id="item_template" class="devtool_bttn item_use">
+
+									</div>
+								</div>
+							</div>
+						</div>
 						<div class="clear"></div>
 					</div>
 
 					<div class="game_render" id="game_output">
-						Loading...
+						<div>Loading...</div>
 					</div>
 				</div>
 			</div>
@@ -69,44 +78,8 @@
 			<div id="player_energy">20</div>
 		</div>
 
-		<div id="Items">
-			Your Items:
-			<div id="items_list">
-				<div class="devtool_bttn item_use" data="water">
-					Water
-				</div>
-
-				<div class="devtool_bttn item_use" data="berry">
-					Berry
-				</div>
-
-
-				<div id="item_template" class="devtool_bttn item_use">
-					
-				</div>
-			</div>
-		</div>
-
 		<script>
-			$(".item_use").click(function(){
-				var type = $(this).attr("data");
-
-				switch(type){
-					case "water":
-						wilderness_player.thirst += 3;
-						break;
-
-					case "berry":
-						wilderness_player.hunger += 3;
-						break;
-				}
-
-				game.endTurn();
-
-
-				$(this).remove();
-			});
-
+			game.initCards();
 		</script>
 	</body>
 </html> 

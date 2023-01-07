@@ -3,7 +3,11 @@
 =============================================================== */
 
 class Card{
-	test = null;
+	id = 0;
+	title = 'Title';
+	description = 'Desc';
+	category = 'Category';
+	amount = 0;
 
 	//Create Card in these dimensions.
 	constructor(){
