@@ -70,19 +70,20 @@ class Wilderness{
 		$('#items_list').empty();
 
 		arr.forEach(c => {
-			console.log(c);
-			$("#items_list").append("<div id=\"item-" + c.id + "\" class=\"card item_use\" data-amount=" + c.amount + " data-type=\"" + c.category + "\" data-id=" + c.id + "><div class=\"card-header\"><div>"
-				+ c.title + ' ' + "ID: " + c.id + "</div><div class=\"amount\">"
-				+ c.amount + "</div></div><div>"
-				+ c.description + "</div></div>");
-			switch (c.category) {
-				case "Drink":
-					$("#item-" + c.id).addClass('drink-card')
-					break;
+			if(c.amount > 0) {
+				$("#items_list").append("<div id=\"item-" + c.id + "\" class=\"card item_use\" data-amount=" + c.amount + " data-type=\"" + c.category + "\" data-id=" + c.id + "><div class=\"card-header\"><div>"
+					+ c.title + ' ' + "ID: " + c.id + "</div><div class=\"amount\">"
+					+ c.amount + "</div></div><div>"
+					+ c.description + "</div></div>");
+				switch (c.category) {
+					case "Drink":
+						$("#item-" + c.id).addClass('drink-card')
+						break;
 
-				case "Food":
-					$("#item-" + c.id).addClass('food-card')
-					break;
+					case "Food":
+						$("#item-" + c.id).addClass('food-card')
+						break;
+				}
 			}
 		})
 
@@ -95,10 +96,8 @@ class Wilderness{
 		var target = el;
 
 		var cardId = parseInt($(target).attr('data-id'));
-		var amount = $(target).attr('data-amount');
+		var amount = parseInt($(target).attr('data-amount'));
 		var type = $(target).attr('data-type');
-
-		console.log('clicked on Id ' + cardId + 'with type ' + type + ' and amount ' + amount);
 
 		switch(type){
 			case "Drink":
@@ -111,25 +110,22 @@ class Wilderness{
 		}
 
 		amount--;
+		console.log(amount);
+		this.updateCard(cardId, amount);
 
-		if (amount > 0) {
-			this.updateCard(cardId, amount);
-			console.log('items left')
-		} else {
+		if (amount == 0) {
 			$(target).remove();
 		}
-		console.log(this.cards);
+
 		game.endTurn();
 	}
 
 	updateCard(cardId, amount) {
-		console.log('Looking for id ' + cardId);
 		var i = this.cards.findIndex(card => card.id === cardId);
 
 		if (i > -1) {
 			this.cards[i].amount = amount;
 			this.createCardElems(this.cards);
-			console.log(this.cards[i]);
 		} else {
 			console.log('Card not found');
 		}
