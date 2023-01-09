@@ -9,6 +9,7 @@ class Tile{
 	detailsdummy = 0;
 	hexagon = 0;
 	hex = null;
+	fog = null;
 
 	constructor(type){
 		this.type = type;
@@ -40,6 +41,10 @@ class Map{
 
 
 		app.stage.addChild(_wilderness_mapcontainer);
+		_wilderness_mapcontainer.addChild(_wilderness_container_tiles);
+		_wilderness_mapcontainer.addChild(_wilderness_container_items);
+		_wilderness_mapcontainer.addChild(_wilderness_container_fog);
+
 
 	}
 
@@ -73,11 +78,42 @@ class Map{
 		return ret;
 	}
 
+	clearFog(x,y){
+		if (this.tiles[x][y].fog != null){
+			gsap.to(this.tiles[x][y].fog, {alpha:0, duration:1});
+		}
+	}
+
+	clearFogR1(x,y){
+		var triggerX = 0;
+		if(x%2 == 1) triggerX = 1;
+
+		this.clearFog(x,y);
+
+		if(triggerX==1){
+			this.clearFog(x+1,y);
+			this.clearFog(x+1,y+1);
+			this.clearFog(x-1,y+1);
+			this.clearFog(x-1,y);
+			this.clearFog(x,y+1);
+			this.clearFog(x,y-1);
+		}else{
+			this.clearFog(x+1,y);
+			this.clearFog(x-1,y-1);
+			this.clearFog(x+1,y-1);
+			this.clearFog(x,y+1);
+			this.clearFog(x-1,y);
+			this.clearFog(x,y-1);
+		}
+	}
+
 
 	//Set MapData Json
 	setData(data){
 		this.tiles = data;
-		for (var i = _wilderness_mapcontainer.children.length - 1; i >= 0; i--) {	_wilderness_mapcontainer.removeChild(_wilderness_mapcontainer.children[i]);};
+		for (var i = _wilderness_container_tiles.children.length - 1; i >= 0; i--) {_wilderness_container_tiles.removeChild(_wilderness_container_tiles.children[i]);};
+		for (var i = _wilderness_container_items.children.length - 1; i >= 0; i--) {_wilderness_container_items.removeChild(_wilderness_container_items.children[i]);};
+		for (var i = _wilderness_container_fog.children.length - 1; i >= 0; i--) {_wilderness_container_fog.removeChild(_wilderness_container_fog.children[i]);};
 		var counter = 1;
 
 		this.tiles = [];
@@ -144,18 +180,29 @@ class Map{
 						break;
 				}
 
+				var fog = new PIXI.Sprite(hexagon_fog);
+
 
 				if (triggerx == 0){
 					hex.transform.position.y = y*90 - 45;
+					fog.transform.position.y = y*90 - 45;
 				}else{
 					hex.transform.position.y = y*90;
+					fog.transform.position.y = y*90;
 				}
 
 				hex.transform.position.x = x*80;
+				fog.transform.position.x = x*80;
 				hex.transform.scale.x = 0.15;
+				fog.transform.scale.x = 0.15;
 				hex.transform.scale.y = 0.15;
+				fog.transform.scale.y = 0.15;
+
 				//hex.alpha = Math.random();
-				_wilderness_mapcontainer.addChild(hex);
+				_wilderness_container_tiles.addChild(hex);
+				_wilderness_container_fog.addChild(fog);
+
+				this.tiles[x][y].fog = fog;
 
 
 				hex.interactive = true;
@@ -192,6 +239,7 @@ class Map{
 					}else{
 						return;
 					}
+					wilderness_map.clearFogR1(x,y);
 					if (wilderness_map.tiles[x][y].type == 4) game.triggerEnd(); //Win
 					game.endTurn();
 					return;

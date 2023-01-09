@@ -6,6 +6,9 @@
 var wilderness_width = 100;
 var wilderness_height = 100;
 var _wilderness_mapcontainer = new PIXI.Container();
+var _wilderness_container_tiles = new PIXI.Container();
+var _wilderness_container_items = new PIXI.Container();
+var _wilderness_container_fog = new PIXI.Container();
 var wilderness_map;
 var wilderness_camera;
 
@@ -22,6 +25,7 @@ var hexagon_end = PIXI.Texture.from('data/gfx/hex_end.png');
 var hexagon_forest = PIXI.Texture.from('data/gfx/hex_forest.png');
 var hexagon_mountain = PIXI.Texture.from('data/gfx/hex_mountain.png');
 var hexagon_mountain_dead = PIXI.Texture.from('data/gfx/hex_mountain_dead.png');
+var hexagon_fog = PIXI.Texture.from('data/gfx/hex_fog.png');
 
 var player = PIXI.Sprite.from('data/gfx/player.png');
 app.stage.addChild(sprite);
