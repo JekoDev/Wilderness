@@ -26,6 +26,9 @@ var hexagon_forest = PIXI.Texture.from('data/gfx/hex_forest.png');
 var hexagon_mountain = PIXI.Texture.from('data/gfx/hex_mountain.png');
 var hexagon_mountain_dead = PIXI.Texture.from('data/gfx/hex_mountain_dead.png');
 var hexagon_fog = PIXI.Texture.from('data/gfx/hex_fog.png');
+var icon_water = PIXI.Texture.from('data/gfx/water.png');
+var icon_berry = PIXI.Texture.from('data/gfx/berry.png');
+var icon_sleep = PIXI.Texture.from('data/gfx/sleep.png');
 
 var player = PIXI.Sprite.from('data/gfx/player.png');
 app.stage.addChild(sprite);
