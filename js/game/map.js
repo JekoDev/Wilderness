@@ -298,6 +298,7 @@ class Map{
 					if (wilderness_player.x == x && wilderness_player.y == y){
 						_wilderness_container_items.removeChild(this);
 						//Add Berry Card
+						game.addCard(1);
 						game.endTurn();
 						return;
 					}
@@ -313,6 +314,7 @@ class Map{
 					if (wilderness_player.x == x && wilderness_player.y == y){
 						_wilderness_container_items.removeChild(this);
 						//Add Water Card
+						game.addCard(2);
 						game.endTurn();
 						return;
 					}

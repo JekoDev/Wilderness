@@ -8,6 +8,13 @@
 var wilderness_server = true;
 var wilderness_round  = 1;
 
+/*
+
+Berry ID: 1, Water ID: 2
+Items could be arranged in a JSON with base amount 0 and set at the beginning of the game
+
+*/
+
 var testCardData = [
 	{
 		id: 1,
@@ -72,7 +79,7 @@ class Wilderness{
 		arr.forEach(c => {
 			if(c.amount > 0) {
 				$("#items_list").append("<div id=\"item-" + c.id + "\" class=\"card item_use\" data-amount=" + c.amount + " data-type=\"" + c.category + "\" data-id=" + c.id + "><div class=\"card-header\"><div>"
-					+ c.title + ' ' + "ID: " + c.id + "</div><div class=\"amount\">"
+					+ c.title + "</div><div class=\"amount\">"
 					+ c.amount + "</div></div><div>"
 					+ c.description + "</div></div>");
 				switch (c.category) {
@@ -128,6 +135,18 @@ class Wilderness{
 			this.createCardElems(this.cards);
 		} else {
 			console.log('Card not found');
+		}
+	}
+
+	addCard(cardId) {
+		var i = this.cards.findIndex(card => card.id === cardId);
+
+		if (i > -1) {
+			// if item exists
+			this.cards[i].amount++
+			this.createCardElems(this.cards);
+		} else {
+			console.error('Invalid ID');
 		}
 	}
 
