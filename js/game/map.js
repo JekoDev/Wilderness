@@ -9,6 +9,11 @@ class Tile{
 	detailsdummy = 0;
 	hexagon = 0;
 	hex = null;
+	fog = null;
+
+	water = null;
+	sleep = null;
+	berry = null;
 
 	constructor(type){
 		this.type = type;
@@ -40,6 +45,10 @@ class Map{
 
 
 		app.stage.addChild(_wilderness_mapcontainer);
+		_wilderness_mapcontainer.addChild(_wilderness_container_tiles);
+		_wilderness_mapcontainer.addChild(_wilderness_container_items);
+		_wilderness_mapcontainer.addChild(_wilderness_container_fog);
+
 
 	}
 
@@ -73,11 +82,42 @@ class Map{
 		return ret;
 	}
 
+	clearFog(x,y){
+		if (this.tiles[x][y].fog != null){
+			gsap.to(this.tiles[x][y].fog, {alpha:0, duration:1});
+		}
+	}
+
+	clearFogR1(x,y){
+		var triggerX = 0;
+		if(x%2 == 1) triggerX = 1;
+
+		this.clearFog(x,y);
+
+		if(triggerX==1){
+			this.clearFog(x+1,y);
+			this.clearFog(x+1,y+1);
+			this.clearFog(x-1,y+1);
+			this.clearFog(x-1,y);
+			this.clearFog(x,y+1);
+			this.clearFog(x,y-1);
+		}else{
+			this.clearFog(x+1,y);
+			this.clearFog(x-1,y-1);
+			this.clearFog(x+1,y-1);
+			this.clearFog(x,y+1);
+			this.clearFog(x-1,y);
+			this.clearFog(x,y-1);
+		}
+	}
+
 
 	//Set MapData Json
 	setData(data){
 		this.tiles = data;
-		for (var i = _wilderness_mapcontainer.children.length - 1; i >= 0; i--) {	_wilderness_mapcontainer.removeChild(_wilderness_mapcontainer.children[i]);};
+		for (var i = _wilderness_container_tiles.children.length - 1; i >= 0; i--) {_wilderness_container_tiles.removeChild(_wilderness_container_tiles.children[i]);};
+		for (var i = _wilderness_container_items.children.length - 1; i >= 0; i--) {_wilderness_container_items.removeChild(_wilderness_container_items.children[i]);};
+		for (var i = _wilderness_container_fog.children.length - 1; i >= 0; i--) {_wilderness_container_fog.removeChild(_wilderness_container_fog.children[i]);};
 		var counter = 1;
 
 		this.tiles = [];
@@ -144,18 +184,81 @@ class Map{
 						break;
 				}
 
+				var fog = new PIXI.Sprite(hexagon_fog);
+
 
 				if (triggerx == 0){
 					hex.transform.position.y = y*90 - 45;
+					fog.transform.position.y = y*90 - 45;
 				}else{
 					hex.transform.position.y = y*90;
+					fog.transform.position.y = y*90;
 				}
 
 				hex.transform.position.x = x*80;
+				fog.transform.position.x = x*80;
 				hex.transform.scale.x = 0.15;
+				fog.transform.scale.x = 0.15;
 				hex.transform.scale.y = 0.15;
+				fog.transform.scale.y = 0.15;
+
 				//hex.alpha = Math.random();
-				_wilderness_mapcontainer.addChild(hex);
+				_wilderness_container_tiles.addChild(hex);
+
+
+
+				
+
+				var randomize = Math.floor(Math.random()*3);
+				//0 = Sleep
+				//1 = Sleep & Berry
+				//2 = Sleep & Water
+				//3 = Sleep & Berry & Water
+
+				//y>60 && x<40 because we do not need the whole Map and it fastens it up drastically
+				if (this.tiles[x][y].type != 3 && this.tiles[x][y].type != 6 && y>60 && x<40){
+					var sleep = new PIXI.Sprite(icon_sleep);
+					sleep.transform.scale.x = 0.1;
+					sleep.transform.scale.y = 0.1;
+
+					sleep.transform.position.x = hex.transform.position.x + 40;
+					sleep.transform.position.y = hex.transform.position.y + 60;
+					_wilderness_container_items.addChild(sleep);
+					sleep.interactive = true;
+					sleep.buttonMode = true;
+					sleep.on("pointerup", _itemclick_sleep)
+					this.tiles[x][y].sleep = sleep;
+
+					if (randomize == 1 || randomize == 3){
+						var berry = new PIXI.Sprite(icon_berry);
+						berry.transform.scale.x = 0.1;
+						berry.transform.scale.y = 0.1;
+						berry.transform.position.x = hex.transform.position.x + 20;
+						berry.transform.position.y = hex.transform.position.y + 10;
+						_wilderness_container_items.addChild(berry);
+						berry.interactive = true;
+						berry.buttonMode = true;
+						berry.on("pointerup", _itemclick_berry)
+						this.tiles[x][y].berry = berry;
+					}
+
+					if (randomize == 2 || randomize == 3){
+						var water = new PIXI.Sprite(icon_water);
+						water.transform.scale.x = 0.08;
+						water.transform.scale.y = 0.08;
+						water.transform.position.x = hex.transform.position.x + 60;
+						water.transform.position.y = hex.transform.position.y + 10;
+						_wilderness_container_items.addChild(water);
+						water.interactive = true;
+						water.buttonMode = true;
+						water.on("pointerup", _itemclick_water)
+						this.tiles[x][y].water = water;
+					}
+				}
+
+				_wilderness_container_fog.addChild(fog);
+
+				this.tiles[x][y].fog = fog;
 
 
 				hex.interactive = true;
@@ -173,6 +276,50 @@ class Map{
 
 	wilderness_map = new Map(wilderness_width, wilderness_height);
 	wilderness_map.setData(wilderness_map_data);
+
+	function _itemclick_sleep(event){
+		for(var y=0; y<wilderness_height; y++){
+			for(var x=0; x<wilderness_width; x++){
+				if (wilderness_map.tiles[x][y].sleep == this){
+					if (wilderness_player.x == x && wilderness_player.y == y){
+						wilderness_player.energy += 4;
+						game.endTurn();
+						return;
+					}
+				}
+			}
+		}
+	}
+
+	function _itemclick_berry(event){
+		for(var y=0; y<wilderness_height; y++){
+			for(var x=0; x<wilderness_width; x++){
+				if (wilderness_map.tiles[x][y].berry == this){
+					if (wilderness_player.x == x && wilderness_player.y == y){
+						_wilderness_container_items.removeChild(this);
+						//Add Berry Card
+						game.endTurn();
+						return;
+					}
+				}
+			}
+		}
+	}
+
+	function _itemclick_water(event){
+		for(var y=0; y<wilderness_height; y++){
+			for(var x=0; x<wilderness_width; x++){
+				if (wilderness_map.tiles[x][y].water == this){
+					if (wilderness_player.x == x && wilderness_player.y == y){
+						_wilderness_container_items.removeChild(this);
+						//Add Water Card
+						game.endTurn();
+						return;
+					}
+				}
+			}
+		}
+	}
 
 
 	function _hexclick_MoveAction(event) {
@@ -192,6 +339,7 @@ class Map{
 					}else{
 						return;
 					}
+					wilderness_map.clearFogR1(x,y);
 					if (wilderness_map.tiles[x][y].type == 4) game.triggerEnd(); //Win
 					game.endTurn();
 					return;

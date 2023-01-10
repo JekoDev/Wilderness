@@ -16,6 +16,7 @@ class Camera{
 				if (wilderness_map.tiles[x][y].type == 5){
 					this.centerTile(x,y);
 					wilderness_player.setPos(x,y);
+					wilderness_map.clearFogR1(x,y);
 				}
 			}
 		}  
