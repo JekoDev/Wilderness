@@ -213,6 +213,46 @@ html, div, footer, header{
 	display:none;
 }
 
+.hiddenelement{
+	display:none;
+}
+
+.network{
+	width:500px;
+	padding:20px;
+	background: black;
+	border-radius:10px;
+}
+
+.network_title{
+	text-align: center;
+}
+
+.network_rooms{
+	padding: 10px;
+	padding-left:20px;
+	margin:5px;
+	border: 1px solid #111;
+	margin-bottom: 40px;
+	margin-top:20px;
+}
+
+.network_create{
+	border: 1px solid #222;
+	background: #111;
+	padding: 10px;
+	border-radius: 10px;
+	width: 100px;
+	cursor:pointer;
+	float:right;
+	text-align: center;
+}
+
+.network_create:hover{
+	background:#222;
+}
+
+
 /* =================================== Responsive ========== */
 
 @media (max-height: 1000px) {
