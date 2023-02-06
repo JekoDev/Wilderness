@@ -1,0 +1,21 @@
+{
+  "name": "wildserver",
+  "version": "1.0.0",
+  "description": "Server for Wilderness",
+  "main": "server.js",
+  "scripts": {
+    "test": "test",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "multiplayer",
+    "boardgame",
+    "digital",
+    "wild"
+  ],
+  "author": "Tristan Herpich",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^8.12.0"
+  }
+}

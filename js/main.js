@@ -5,7 +5,7 @@
 
 //============================================================= Game
 
-var wilderness_server = true;
+var wilderness_port = 412;
 var wilderness_round  = 1;
 
 /*
