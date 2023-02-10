@@ -4,6 +4,7 @@
 	<head>
 		<!-- Meta ==================================== -->
 		<title>Wilderness</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 
 		<!-- Style =================================== -->
 		<link rel="stylesheet" href="css/style.css">
@@ -47,6 +48,7 @@
 					<div class="game_menu">
 						<div class="game_score">Round: 1</div>
 						<div class="game_control">E</div>
+						<br>
 						<div class="user-list" id="user-list">
 							<div>Players: </div>
 						</div>
@@ -69,16 +71,19 @@
 
 				<div class="network" id="network-menu">
 					<div class="network_title">.:: Network Menu ::.</div>
-					Rooms:
-					<div class="network_rooms" id="network_rooms">
-
-					</div>
-					<div class="network-menu-footer">
+					<div class="create-room-wrapper" style="margin-bottom: 1rem">
 						<div>
 							<span>Your name: </span>
 							<input id="player-name">
 						</div>
+						<div>
+							<span>Room key: </span>
+							<input id="room-key" maxlength="4">
+						</div>
+					</div>
+					<div class="create-room-wrapper">
 						<div class="network_create" id="create-room">Create Room</div>
+						<div class="network_create" id="join-room">Join Room</div>
 					</div>
 				</div>
 			</div>
@@ -102,17 +107,36 @@
 			game.initCards();
 
 			$('#create-room').click( () => {
-				let playerName = $('#player-name').val().toString();;
+				let playerName = $('#player-name').val().toString();
 
+				// if all input fields are filled
 				if (playerName.length > 0) {
-					wilderness_network.createRoom('bla', playerName);
+					wilderness_network.createRoom(playerName);
 				} else {
-					wilderness_network.createRoom('bla', 'Random');
+					alert('Enter name!')
 				}
 
 				$('#main-game').removeClass('hiddenelement');
 				$('#network-menu').addClass('hiddenelement');
 			});
+
+			$('#join-room').click( () => {
+				let playerName = $('#player-name').val().toString();
+				let roomName = $('#room-key').val().toString();
+
+				// if all input fields are filled
+				if (playerName.length > 0 && roomName.length === 4 && wilderness_network.roomExists()) {
+					wilderness_network.joinRoom(playerName, roomName);
+
+					$('#main-game').removeClass('hiddenelement');
+					$('#network-menu').addClass('hiddenelement');
+				} else {
+					alert('Invalid room key!')
+				}
+
+			});
+
+
 
 		</script>
 	</body>

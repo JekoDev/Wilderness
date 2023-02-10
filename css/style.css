@@ -142,11 +142,16 @@ html, div, footer, header{
 	color: #555;
 }
 
-.network-menu-footer {
+.create-room-wrapper {
 	display: flex;
 	width: 100%;
 	align-items: center;
 	justify-content: space-between;
+	min-height: 3rem;
+}
+
+.create-room-wrapper input {
+	color: #111111;
 }
 
 .header h1{

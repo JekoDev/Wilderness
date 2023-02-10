@@ -111,6 +111,7 @@ class Wilderness{
 		} );
 	}
 
+
 	itemClick(el) {
 		var target = el;
 

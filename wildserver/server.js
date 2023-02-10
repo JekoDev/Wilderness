@@ -2,7 +2,7 @@
 var _port = 412;
 var ws = require("ws"),
     wss = new ws.Server({ port: _port }),
-    rooms = {},
+    rooms = [],
     users = {};
  
 class Room {
@@ -10,9 +10,15 @@ class Room {
 	users = [];
 }
 
+class User {
+	name = "";
+	id = -1;
+}
+
 extractParams = function (message) {
 	let params = [];
 
+	// regex to split params at dollar sign, first param is the order
 	message = message.substring(3);
 	var count = (message.match(/\$/g) || []).length;
 
@@ -33,6 +39,9 @@ wss.on("connection", (socket, req) => {
     id++;
   }
 
+  let currentUser = new User();
+  currentUser.id = id;
+
   socket.on("rn", () => {
   	console.log('room created');
   })
@@ -50,17 +59,17 @@ wss.on("connection", (socket, req) => {
     let param = message.split("$")[1];
     let paramArray = extractParams(message);
 
-    //console.log(params)
-
-
 	  switch(order){
-    	case "CR":  //Create Room
+		  case "CR":  //Create Room
+			// params:
+			// [0]: key
+			// [1]: users
     		var r = new Room();
 			r.name = paramArray[0];
-			r.users.push(paramArray[1]);
-			console.log('Room: ' + r.name + ' by: ' + r.users);
-			socket.send('RC$' + r.name + '$');
-			//users[u].send("YES$");
+			currentUser.name = paramArray[1];
+			r.users.push(currentUser);
+			socket.send('RC$' + r.name + '$' + JSON.stringify(r.users) + '$');
+			rooms.push(r);
     		break;
     	case "ED":  //exchange Data
     		break;
@@ -76,17 +85,21 @@ wss.on("connection", (socket, req) => {
     			}
     			//users[u].send("YES$");
     		}
+
+    		socket.send(s);
     		break;
-    	case "JR": 	//Join Room
-    		for (let r in rooms){
-    			if(r.name == param){
-    				if (r.users.length == 1){
-	    				//r.users.push(users[u]);
-						//users[u].send("YES$");
-					}
-    				break;
-    			}
-    		}
+		  case "JR": // Join room
+		  	//let roomToFind = rooms.filter( room => room.name === paramArray[1]);
+		  	let roomToFind = rooms.find(room => room.name === paramArray[1]);
+
+		  	if (roomToFind === undefined) {
+		  		socket.send('error');
+			} else {
+				currentUser.name = paramArray[0];
+				roomToFind.users.push(currentUser);
+				console.log(roomToFind);
+			}
+
     		break;
     	case "DC":  //Disconnect
     		for (let r in rooms){

@@ -8,7 +8,12 @@ class Network{
 	//0=Client | 1=Server
 
 	rooms = [];
-	croom = ""; //connected room name
+
+	//connected room name
+	croom = {
+		users: [],
+		roomKey: ""
+	};
 	ip = "127.0.0.1";
 	port = wilderness_port;
 	server = false;
@@ -23,12 +28,15 @@ class Network{
 
 		this.socket.addEventListener("open", () => {
   			this.connected = true;
-			this.createRoom('Testroom', 'Tester');
 		});
 
 		this.socket.addEventListener('message', (event) => {
     		this._thread_network(event);
     		console.log(event);
+		});
+
+		this.socket.addEventListener('error', (event) => {
+			console.log('WebSocket error: ', event);
 		});
 
 		var that = this;
@@ -64,9 +72,13 @@ class Network{
 
 		switch(order){
 			case "RC":
-				//On Room Created
-				console.log('Room created')
-				$('#network_rooms').append("<div>" + paramArray[0] + "</div>");
+				// add room key to rooms
+				this.rooms.push(paramArray[0]);
+
+				// get JSON user object
+				this.croom.users.push(paramArray[0]);
+				this.croom.roomKey = paramArray[0];
+				$('#user-list').append("<div>" + this.croom.users + "</div>");
 				break;
 			case "RR":
 				//Refresh Rooms
@@ -86,9 +98,15 @@ class Network{
 		}
 	}
 
-	createRoom(roomname, username){
+	createRoom(username){
+		let roomname = this.genKey(4);
 		this.socket.send("CR$"+roomname+"$"+username+"$");
+		console.log(roomname, username);
 		this.server = true;
+	}
+
+	joinRoom(playerName, roomKey) {
+		this.socket.send('JR$' + playerName + '$' + roomKey + '$')
 	}
 
 	refreshRooms(){
@@ -106,6 +124,20 @@ class Network{
 
 	exchange(data){
 		this.socket.send("ED$"+data+"$");
+	}
+
+	roomExists() {
+		return true;
+	}
+
+	genKey(length) {
+		let result = '';
+		const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+		for (let i = 0; i < length; i++) {
+			result += characters.charAt(
+				Math.floor(Math.random() * characters.length));
+		}
+		return result;
 	}
 }
 
