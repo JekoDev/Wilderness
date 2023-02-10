@@ -59,18 +59,6 @@ class Wilderness{
 		alert("Won");
 	}
 
-	initRooms() {
-		let amountOfRooms = (wilderness_network.rooms.length);
-		if(amountOfRooms > 0) {
-			for (let i = 0; i < wilderness_network.rooms.length; i++) {
-				$('#network_rooms').append("<div>"+wilderness_network.rooms[i] +"</div>")
-			}
-		} else {
-			$('#network_rooms').append("<div>No rooms</div>")
-		}
-
-	}
-
 	initCards() {
 		testCardData.forEach( c => {
 			var card = new Card();

@@ -75,10 +75,17 @@ class Network{
 				// add room key to rooms
 				this.rooms.push(paramArray[0]);
 
-				// get JSON user object
+				// get JSON room object
 				this.croom.users.push(paramArray[0]);
-				this.croom.roomKey = paramArray[0];
+				this.croom.roomKey = paramArray[1];
 				$('#user-list').append("<div>" + this.croom.users + "</div>");
+				break;
+			case "RJ":
+				let receivedRoom = JSON.parse(paramArray[0]);
+
+				console.log(receivedRoom);
+				//$('#user-list').empty();
+				//$('#user-list').append("<div>" + this.croom.users + "</div>");
 				break;
 			case "RR":
 				//Refresh Rooms

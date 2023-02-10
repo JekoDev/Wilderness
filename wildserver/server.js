@@ -97,7 +97,7 @@ wss.on("connection", (socket, req) => {
 			} else {
 				currentUser.name = paramArray[0];
 				roomToFind.users.push(currentUser);
-				console.log(roomToFind);
+				socket.send('RJ$'+ JSON.stringify(roomToFind) + '$');
 			}
 
     		break;
