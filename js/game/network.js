@@ -20,27 +20,74 @@ class Network{
 	constructor(){
 
 		this.socket = new WebSocket('ws://localhost:' + this.port);
-		
+
 		this.socket.addEventListener("open", () => {
   			this.connected = true;
+			this.createRoom('Testroom', 'Tester');
 		});
 
 		this.socket.addEventListener('message', (event) => {
     		this._thread_network(event);
+    		console.log(event);
 		});
 
 		var that = this;
 		setTimeout(function(){
 			if (that.connected != true){
-				alert("Warning: No Server connection possible!" + that.connected);
+				alert("Warning: No Server connection possible! " + that.connected);
 			}
 
 		},2000, that);
 	}
 
+	extractParams = function (message) {
+		let params = [];
 
-	createRoom(roomname){
-		this.socket.send("CR$"+roomname+"$");
+		message = message.substring(3);
+		var count = (message.match(/\$/g) || []).length;
+
+		for (let i = 0; i < count; i++) {
+			params.push(message.split("$")[i]);
+		}
+
+		return params;
+	}
+
+	_thread_network(msg){
+
+		let message = msg.data.toString();
+
+		let order = message.split("$")[0];
+		let param = message.split("$")[1];
+		let paramArray = this.extractParams(message);
+		var _data = msg.data;
+
+		switch(order){
+			case "RC":
+				//On Room Created
+				console.log('Room created')
+				$('#network_rooms').append("<div>" + paramArray[0] + "</div>");
+				break;
+			case "RR":
+				//Refresh Rooms
+				break;
+			case "ED":
+				//Exchange Data
+				switch(param){
+					case "MD": //Mapdata
+						break;
+					case "TN": //Turn
+						break;
+				}
+				break;
+			case "DC":
+				//Server has ended
+				break;
+		}
+	}
+
+	createRoom(roomname, username){
+		this.socket.send("CR$"+roomname+"$"+username+"$");
 		this.server = true;
 	}
 
@@ -59,32 +106,6 @@ class Network{
 
 	exchange(data){
 		this.socket.send("ED$"+data+"$");
-	}
-
-	_thread_network(data){
-		var event = data.data.split("$")[0];
-		var param = data.data.split("$")[1];
-		var _data = data.data;
-
-		switch(data){
-			case "RR":
-				//Refresh Rooms
-				break;
-			case "ED":
-				//Exchange Data
-				switch(param){
-					case "MD": //Mapdata
-						break;
-					case "TN": //Turn
-						break;
-				}
-				break;
-			case "DC":
-				//Server has ended
-				break;
-		}
-
-
 	}
 }
 

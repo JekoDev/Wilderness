@@ -43,10 +43,13 @@
 			</header>
 
 			<div class="game_container">
-				<div class="game_main hiddenelement">
+				<div class="game_main hiddenelement" id="main-game">
 					<div class="game_menu">
 						<div class="game_score">Round: 1</div>
 						<div class="game_control">E</div>
+						<div class="user-list" id="user-list">
+							<div>Players: </div>
+						</div>
 						<div class="item-wrapper">
 							<div id="Items" class="items">
 								<div id="items_list">
@@ -64,13 +67,19 @@
 					</div>
 				</div>
 
-				<div class="network">
+				<div class="network" id="network-menu">
 					<div class="network_title">.:: Network Menu ::.</div>
 					Rooms:
-					<div class="network_rooms">
-						-
+					<div class="network_rooms" id="network_rooms">
+
 					</div>
-					<div class="network_create">Create Room</div>
+					<div class="network-menu-footer">
+						<div>
+							<span>Your name: </span>
+							<input id="player-name">
+						</div>
+						<div class="network_create" id="create-room">Create Room</div>
+					</div>
 				</div>
 			</div>
 
@@ -91,6 +100,20 @@
 
 		<script>
 			game.initCards();
+
+			$('#create-room').click( () => {
+				let playerName = $('#player-name').val().toString();;
+
+				if (playerName.length > 0) {
+					wilderness_network.createRoom('bla', playerName);
+				} else {
+					wilderness_network.createRoom('bla', 'Random');
+				}
+
+				$('#main-game').removeClass('hiddenelement');
+				$('#network-menu').addClass('hiddenelement');
+			});
+
 		</script>
 	</body>
 </html> 
