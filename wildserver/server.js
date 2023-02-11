@@ -8,6 +8,10 @@ var ws = require("ws"),
 class Room {
 	name = "";
 	users = [];
+	roomData = {
+		mapData: "",
+		yourTurn: false
+	};
 }
 
 class User {
@@ -29,6 +33,14 @@ extractParams = function (message) {
 	return params;
 }
 
+defineConnectedUsers = function (roomToFind) {
+	let validIds = [];
+	roomToFind.users.forEach( u => {
+		validIds.push(u.id)
+	})
+	console.log(validIds);
+	return validIds
+}
 
 // (B) ON CLIENT CONNECT
 wss.on("connection", (socket, req) => {
@@ -44,10 +56,8 @@ wss.on("connection", (socket, req) => {
 
   socket.on("rn", () => {
   	console.log('room created');
-  })
+  });
 
-
- 
   // (B2) DEREGISTER CLIENT ON DISCONNECT
   socket.on("close", () => delete users[id]);
 
@@ -91,15 +101,20 @@ wss.on("connection", (socket, req) => {
 		  case "JR": // Join room
 		  	//let roomToFind = rooms.filter( room => room.name === paramArray[1]);
 		  	let roomToFind = rooms.find(room => room.name === paramArray[1]);
+		  	let connectedUsers;
 
 		  	if (roomToFind === undefined) {
 		  		socket.send('error');
 			} else {
 				currentUser.name = paramArray[0];
 				roomToFind.users.push(currentUser);
-				socket.send('RJ$'+ JSON.stringify(roomToFind) + '$');
+				connectedUsers = defineConnectedUsers(roomToFind);
+				socket.clients.forEach(client => {
+					if(connectedUsers.includes(client.id)) {
+						socket.send('RJ$'+ JSON.stringify(roomToFind) + '$');
+					}
+				})
 			}
-
     		break;
     	case "DC":  //Disconnect
     		for (let r in rooms){

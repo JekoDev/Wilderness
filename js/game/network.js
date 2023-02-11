@@ -76,16 +76,29 @@ class Network{
 				this.rooms.push(paramArray[0]);
 
 				// get JSON room object
-				this.croom.users.push(paramArray[0]);
-				this.croom.roomKey = paramArray[1];
-				$('#user-list').append("<div>" + this.croom.users + "</div>");
-				break;
-			case "RJ":
-				let receivedRoom = JSON.parse(paramArray[0]);
+				let receivedUsers = JSON.parse(paramArray[1]);
 
-				console.log(receivedRoom);
-				//$('#user-list').empty();
-				//$('#user-list').append("<div>" + this.croom.users + "</div>");
+				receivedUsers.forEach(u => {
+					this.croom.users.push(u);
+				})
+				//this.croom.users.push(JSON.parse(paramArray[1]));
+				this.croom.roomKey = paramArray[0];
+				this.croom.users.forEach( u => {
+					$('#user-list').append("<div>" + u.name + "</div>");
+				})
+
+				$('#display-room-key').append("<div>" + this.croom.roomKey + "</div>");
+				break;
+			case "RJ": // Room joined
+				let receivedRoom = JSON.parse(paramArray[0]);
+				this.croom.users = receivedRoom.users;
+				this.croom.roomKey = receivedRoom.name;
+
+				$('#user-list').empty();
+				this.croom.users.forEach( u => {
+					$('#user-list').append("<div>" + u.name + "</div>");
+				})
+				$('#display-room-key').append("<div>" + this.croom.roomKey + "</div>");
 				break;
 			case "RR":
 				//Refresh Rooms

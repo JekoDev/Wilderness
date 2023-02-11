@@ -154,6 +154,13 @@ html, div, footer, header{
 	color: #111111;
 }
 
+.room-infos {
+	display: flex;
+	width: 100%;
+	justify-content: space-between;
+	align-items: center;
+}
+
 .header h1{
 	padding:10px;
 }
