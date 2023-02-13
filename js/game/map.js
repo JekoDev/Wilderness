@@ -268,7 +268,6 @@ class Map{
 	
 //============================================================= Hexagon Move Functions
 
-	wilderness_map = new Map(wilderness_width, wilderness_height);
 	//wilderness_map.setData(wilderness_map_data);
 
 	function _itemclick_sleep(event){

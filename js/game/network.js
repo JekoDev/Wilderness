@@ -108,8 +108,10 @@ class Network{
 					console.log('Room was joined')
 					this.croom.roomKey = receivedRoom.name;
 					this.croom.roomData.mapData = receivedRoom.roomData.mapData;
-					// havent been able to pass the exact map data, so a new map is generated each time unfortunately
+					// havent been able to pass the exact map data
+					// items are generated on "setData" so theyre not identical
 					// needs fixing
+					wilderness_map = new Map(wilderness_width, wilderness_height);
 					wilderness_map.setData(this.croom.roomData.mapData);
 					wilderness_player = new Player(1, 1);
 					wilderness_camera = new Camera(1, 1);
@@ -148,6 +150,7 @@ class Network{
 	createRoom(username){
 		let roomname = this.genKey(4);
 		this.cuser = username;
+		wilderness_map = new Map(wilderness_width, wilderness_height);
 		wilderness_map.setData(wilderness_map_data);
 		wilderness_player = new Player(1, 1);
 		wilderness_camera = new Camera(1, 1);
