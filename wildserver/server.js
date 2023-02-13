@@ -9,14 +9,14 @@ class Room {
 	name = "";
 	users = [];
 	roomData = {
-		mapData: ""
+		mapData: "",
+		playerTurn: 0
 	};
 }
 
 class User {
 	name = "";
 	id = -1;
-	isUserTurn = false;
 }
 
 extractParams = function (message) {
@@ -79,10 +79,29 @@ wss.on("connection", (socket, req) => {
 			currentUser.name = paramArray[1];
 			r.users.push(currentUser);
 			r.roomData.mapData = JSON.parse(paramArray[2]);
+			r.roomData.playerTurn = 2;
 			socket.send('RC$' + r.name + '$' + JSON.stringify(r.users) + '$' + JSON.stringify(r.roomData.mapData));
 			rooms.push(r);
     		break;
-    	case "ED":  //exchange Data
+    	case "TT":  //take turn
+			// find what room a turn was taken in
+			let cr = rooms.find(room => room.name = paramArray[1])
+
+			if (cr) {
+				if (cr.roomData.playerTurn === 1) {
+					wss.clients.forEach(function each(client) {
+						client.send('YT$'+ 2 + '$');
+					});
+					cr.roomData.playerTurn = 2;
+				} else {
+					wss.clients.forEach(function each(client) {
+						client.send('YT$'+ 1 + '$');
+					});
+					cr.roomData.playerTurn = 1;
+				}
+			}
+
+
     		break;
 		  case "UN":
 		  	//r.users.push(msg);
@@ -112,6 +131,7 @@ wss.on("connection", (socket, req) => {
 				connectedUsers = defineConnectedUsers(roomToFind);
 
 				wss.clients.forEach(function each(client) {
+					// later on I realized I can send entire objects, didn't do that in "create Room"
 					client.send('RJ$'+ JSON.stringify(roomToFind) + '$');
 				});
 
@@ -124,7 +144,6 @@ wss.on("connection", (socket, req) => {
 					}
 				}) */
 			}
-
 
     		break;
     	case "DC":  //Disconnect

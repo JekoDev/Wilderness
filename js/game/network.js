@@ -9,15 +9,21 @@ class Network{
 
 	rooms = [];
 
-	// current user name
-	cuser = ""
+	// current user
+	cuser = {
+		username: "",
+		playerNr: 0,
+		yourTurn: 0
+	}
 
 	//connected room name
+	// playerTurn 1 means player 1 can take a turn etc.
 	croom = {
 		users: [],
 		roomKey: "",
 		roomData: {
-			mapData: []
+			mapData: [],
+			playerTurn: 0
 		}
 	};
 	ip = "127.0.0.1";
@@ -88,6 +94,8 @@ class Network{
 				})
 				//this.croom.users.push(JSON.parse(paramArray[1]));
 				this.croom.roomKey = paramArray[0];
+				// hypothetical "last players turn" was the second player's
+				this.croom.roomData.playerTurn = 2;
 
 				// update GUI
 				this.croom.users.forEach( u => {
@@ -104,7 +112,7 @@ class Network{
 				})
 
 				// have to do check on client side, which is worse performance-wise
-				if (usersNamesInRoom.includes(this.cuser)) {
+				if (usersNamesInRoom.includes(this.cuser.username)) {
 					console.log('Room was joined')
 					this.croom.roomKey = receivedRoom.name;
 					this.croom.roomData.mapData = receivedRoom.roomData.mapData;
@@ -129,14 +137,21 @@ class Network{
 			case "RR":
 				//Refresh Rooms
 				break;
-			case "ED":
-				//Exchange Data
-				switch(param){
-					case "MD": //Mapdata
-						break;
-					case "TN": //Turn
-						break;
+			case "YT":
+				// Receives last turn
+				// if you're not the last user who took a turn, it becomes your turn
+				let userTurn = paramArray[0];
+
+				if (parseInt(userTurn) === this.cuser.playerNr) {
+					this.cuser.yourTurn = true;
+					console.log('Your turn!');
+				} else {
+					this.cuser.yourTurn = false;
+					console.log('Not your turn!');
 				}
+
+				this.croom.roomData.playerTurn = userTurn;
+
 				break;
 			case "DC":
 				//Server has ended
@@ -147,9 +162,21 @@ class Network{
 	setStartingPosition(x, y) {
 	}
 
+	endTurn() {
+		// send which user in which room took a turn
+		this.socket.send('TT$' + this.croom.roomData.playerTurn + '$' + this.croom.roomKey + '$');
+		// thing that signifies that it's not your turn happens
+		// maybe no pointer events on game possible? something like that
+	}
+
 	createRoom(username){
 		let roomname = this.genKey(4);
-		this.cuser = username;
+		this.cuser.username = username;
+
+		// if you create, youre player 1
+		this.cuser.playerNr = 1;
+		this.cuser.yourTurn = true;
+		console.log('Your turn!');
 		wilderness_map = new Map(wilderness_width, wilderness_height);
 		wilderness_map.setData(wilderness_map_data);
 		wilderness_player = new Player(1, 1);
@@ -162,7 +189,12 @@ class Network{
 	}
 
 	joinRoom(playerName, roomKey) {
-		this.cuser = playerName;
+		this.cuser.username = playerName;
+
+		// if you join, youre player 2
+		this.cuser.playerNr = 2;
+		this.cuser.yourTurn = false;
+		console.log('Not your turn!');
 		this.socket.send('JR$' + playerName + '$' + roomKey + '$')
 	}
 

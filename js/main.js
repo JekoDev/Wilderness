@@ -174,6 +174,7 @@ class Wilderness{
 		if(this.isDead()) alert("U died!");
 
 		this.updateGUI();
+		wilderness_network.endTurn();
 	}
 }
 
