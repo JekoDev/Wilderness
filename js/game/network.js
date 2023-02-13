@@ -9,10 +9,16 @@ class Network{
 
 	rooms = [];
 
+	// current user name
+	cuser = ""
+
 	//connected room name
 	croom = {
 		users: [],
-		roomKey: ""
+		roomKey: "",
+		roomData: {
+			mapData: []
+		}
 	};
 	ip = "127.0.0.1";
 	port = wilderness_port;
@@ -32,7 +38,6 @@ class Network{
 
 		this.socket.addEventListener('message', (event) => {
     		this._thread_network(event);
-    		console.log(event);
 		});
 
 		this.socket.addEventListener('error', (event) => {
@@ -83,22 +88,41 @@ class Network{
 				})
 				//this.croom.users.push(JSON.parse(paramArray[1]));
 				this.croom.roomKey = paramArray[0];
+
+				// update GUI
 				this.croom.users.forEach( u => {
 					$('#user-list').append("<div>" + u.name + "</div>");
 				})
-
 				$('#display-room-key').append("<div>" + this.croom.roomKey + "</div>");
 				break;
 			case "RJ": // Room joined
 				let receivedRoom = JSON.parse(paramArray[0]);
 				this.croom.users = receivedRoom.users;
-				this.croom.roomKey = receivedRoom.name;
-
-				$('#user-list').empty();
-				this.croom.users.forEach( u => {
-					$('#user-list').append("<div>" + u.name + "</div>");
+				let usersNamesInRoom = []
+				this.croom.users.forEach(user => {
+					usersNamesInRoom.push(user.name)
 				})
-				$('#display-room-key').append("<div>" + this.croom.roomKey + "</div>");
+
+				// have to do check on client side, which is worse performance-wise
+				if (usersNamesInRoom.includes(this.cuser)) {
+					console.log('Room was joined')
+					this.croom.roomKey = receivedRoom.name;
+					this.croom.roomData.mapData = receivedRoom.roomData.mapData;
+					// havent been able to pass the exact map data, so a new map is generated each time unfortunately
+					// needs fixing
+					wilderness_map.setData(this.croom.roomData.mapData);
+					wilderness_player = new Player(1, 1);
+					wilderness_camera = new Camera(1, 1);
+					this.setStartingPosition(1, 1);
+
+					// update GUI
+					this.croom.users.forEach( u => {
+						$('#user-list').append("<div>" + u.name + "</div>");
+					})
+					$('#display-room-key').empty();
+					$('#display-room-key').append("<div>" + this.croom.roomKey + "</div>");
+				}
+
 				break;
 			case "RR":
 				//Refresh Rooms
@@ -118,14 +142,24 @@ class Network{
 		}
 	}
 
+	setStartingPosition(x, y) {
+	}
+
 	createRoom(username){
 		let roomname = this.genKey(4);
-		this.socket.send("CR$"+roomname+"$"+username+"$");
+		this.cuser = username;
+		wilderness_map.setData(wilderness_map_data);
+		wilderness_player = new Player(1, 1);
+		wilderness_camera = new Camera(1, 1);
+		let mapData = JSON.stringify(wilderness_map_data);
+		this.setStartingPosition(0, 1);
+		this.socket.send("CR$"+roomname+"$"+username+"$"+mapData+"$");
 		console.log(roomname, username);
 		this.server = true;
 	}
 
 	joinRoom(playerName, roomKey) {
+		this.cuser = playerName;
 		this.socket.send('JR$' + playerName + '$' + roomKey + '$')
 	}
 

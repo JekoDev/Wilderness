@@ -7,19 +7,25 @@ class Camera{
 	y = 0;
 	zoom = 2.5;
 
-	constructor(){
+	constructor(x, y){
 
+		this.x = x;
+		this.y = y;
 		var b = 0;
+
+		wilderness_player.setPos(x,y);
+		wilderness_map.clearFogR1(x,y);
 
 		for(var y=0; y<wilderness_height; y++){
 			for(var x=0; x<wilderness_width; x++){
+				// find tile named "start"
 				if (wilderness_map.tiles[x][y].type == 5){
 					this.centerTile(x,y);
 					wilderness_player.setPos(x,y);
 					wilderness_map.clearFogR1(x,y);
 				}
 			}
-		}  
+		}
 	}
 
 
@@ -51,7 +57,5 @@ class Camera{
 		gsap.to(_wilderness_mapcontainer.transform.position, {duration:1, x:-this.x, y:-this.y});
 	}
 }
-
-var wilderness_camera = new Camera();
 
 //============================================================= EOF

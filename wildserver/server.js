@@ -9,14 +9,14 @@ class Room {
 	name = "";
 	users = [];
 	roomData = {
-		mapData: "",
-		yourTurn: false
+		mapData: ""
 	};
 }
 
 class User {
 	name = "";
 	id = -1;
+	isUserTurn = false;
 }
 
 extractParams = function (message) {
@@ -38,7 +38,6 @@ defineConnectedUsers = function (roomToFind) {
 	roomToFind.users.forEach( u => {
 		validIds.push(u.id)
 	})
-	console.log(validIds);
 	return validIds
 }
 
@@ -74,11 +73,13 @@ wss.on("connection", (socket, req) => {
 			// params:
 			// [0]: key
 			// [1]: users
+			// [2]: map data
     		var r = new Room();
 			r.name = paramArray[0];
 			currentUser.name = paramArray[1];
 			r.users.push(currentUser);
-			socket.send('RC$' + r.name + '$' + JSON.stringify(r.users) + '$');
+			r.roomData.mapData = JSON.parse(paramArray[2]);
+			socket.send('RC$' + r.name + '$' + JSON.stringify(r.users) + '$' + JSON.stringify(r.roomData.mapData));
 			rooms.push(r);
     		break;
     	case "ED":  //exchange Data
@@ -109,12 +110,22 @@ wss.on("connection", (socket, req) => {
 				currentUser.name = paramArray[0];
 				roomToFind.users.push(currentUser);
 				connectedUsers = defineConnectedUsers(roomToFind);
-				socket.clients.forEach(client => {
+
+				wss.clients.forEach(function each(client) {
+					client.send('RJ$'+ JSON.stringify(roomToFind) + '$');
+				});
+
+
+				// only broadcast to users connected to specific room, doesnt really work yet
+				// would work better with socket.io instead of node.js websocket
+				// socket.io has built in rooms
+				/* wss.clients.forEach(client => {
 					if(connectedUsers.includes(client.id)) {
-						socket.send('RJ$'+ JSON.stringify(roomToFind) + '$');
 					}
-				})
+				}) */
 			}
+
+
     		break;
     	case "DC":  //Disconnect
     		for (let r in rooms){

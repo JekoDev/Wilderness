@@ -205,10 +205,6 @@ class Map{
 				//hex.alpha = Math.random();
 				_wilderness_container_tiles.addChild(hex);
 
-
-
-				
-
 				var randomize = Math.floor(Math.random()*3);
 				//0 = Sleep
 				//1 = Sleep & Berry
@@ -264,18 +260,16 @@ class Map{
 				hex.interactive = true;
 				hex.buttonMode = true;
 				hex.on("pointerup", _hexclick_MoveAction);
-				
 				//Generation goes here
 			}
 		}
-
 	}
 }
 	
 //============================================================= Hexagon Move Functions
 
 	wilderness_map = new Map(wilderness_width, wilderness_height);
-	wilderness_map.setData(wilderness_map_data);
+	//wilderness_map.setData(wilderness_map_data);
 
 	function _itemclick_sleep(event){
 		for(var y=0; y<wilderness_height; y++){
@@ -360,8 +354,5 @@ class Map{
 	$(document).ready(function(){
 		$("#game_output").html(app.view);
 	});
-
-
-
 
 //============================================================= EOF
