@@ -114,10 +114,7 @@ class Network{
 					// havent been able to pass the exact map data
 					// items are generated on "setData" so theyre not identical
 					// needs fixing
-					wilderness_map = new Map(wilderness_width, wilderness_height);
-					wilderness_map.setData(this.croom.roomData.mapData);
-					wilderness_player = new Player(1, 1);
-					wilderness_camera = new Camera(1, 1);
+					this.initSprites()
 					this.setStartingPosition(1, 1);
 
 					// update GUI
@@ -200,15 +197,24 @@ class Network{
 		this.cuser.playerNr = 1;
 		this.cuser.yourTurn = true;
 		console.log('Your turn!');
-		wilderness_map = new Map(wilderness_width, wilderness_height);
-		wilderness_map.setData(wilderness_map_data);
-		wilderness_player = new Player(1, 1);
-		wilderness_camera = new Camera(1, 1);
+
+		// init map and players
+		this.initSprites();
 		let mapData = JSON.stringify(wilderness_map_data);
 		this.setStartingPosition(0, 1);
 		this.socket.send("CR$"+roomname+"$"+username+"$"+mapData+"$");
 		console.log(roomname, username);
 		this.server = true;
+	}
+
+	initSprites() {
+		wilderness_map = new Map(wilderness_width, wilderness_height);
+		wilderness_map.setData(wilderness_map_data);
+		wilderness_player2 = new Player(1, 1, player2);
+		wilderness_player = new Player(1, 1, player);
+		wilderness_camera = new Camera(1, 1);
+		// center second player
+		wilderness_player2.setPosEase(wilderness_player.x, wilderness_player.y);
 	}
 
 	joinRoom(playerName, roomKey) {

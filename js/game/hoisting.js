@@ -14,6 +14,7 @@ var wilderness_camera;
 
 // Player
 var wilderness_player;
+var wilderness_player2;
 
 var app = new PIXI.Application({width:960, height:540});
 var sprite = PIXI.Sprite.from('data/gfx/test.jpg');
@@ -31,6 +32,7 @@ var icon_berry = PIXI.Texture.from('data/gfx/berry.png');
 var icon_sleep = PIXI.Texture.from('data/gfx/sleep.png');
 
 var player = PIXI.Sprite.from('data/gfx/player.png');
+var player2 = PIXI.Sprite.from('data/gfx/player2.png');
 app.stage.addChild(sprite);
 sprite.transform.position.x = 100;
 

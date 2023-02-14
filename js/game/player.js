@@ -6,35 +6,40 @@ class Player{
 	x = 0;
 	y = 0;
 
+	playerSprite;
+
 	thirst = 10;
 	hunger = 10;
 	energy = 20;
 
-	constructor(x,y){
+	constructor(x,y, playerSprite){
+
+		this.playerSprite = playerSprite;
+
 		this.x = x;
 		this.y = y;
-		_wilderness_mapcontainer.addChild(player);
+		_wilderness_mapcontainer.addChild(this.playerSprite);
 	}
 
 	setPos(x, y){
 		this.x = x;
 		this.y = y;
 		
-		player.transform.scale.x = 0.1;
-		player.transform.scale.y = 0.1;
-		player.transform.position.x =  x * 80   + 45 -5;
-		player.transform.position.y =  y * 90  - 10 ;
+		this.playerSprite.transform.scale.x = 0.1;
+		this.playerSprite.transform.scale.y = 0.1;
+		this.playerSprite.transform.position.x =  x * 80   + 45 -5;
+		this.playerSprite.transform.position.y =  y * 90  - 10 ;
 		if (x%2 == 1){
-			player.transform.position.y += 45 ;
+			this.playerSprite.transform.position.y += 45 ;
 		}
 	}
 
 	setPosEase(x,y){
 		this.x = x;
 		this.y = y;
-		
-		player.transform.scale.x = 0.1;
-		player.transform.scale.y = 0.1;
+
+		this.playerSprite.transform.scale.x = 0.1;
+		this.playerSprite.transform.scale.y = 0.1;
 
 		var toX = x * 80   + 45 -5;
 		var toY = y * 90  - 10 ;
@@ -43,7 +48,7 @@ class Player{
 			toY += 45 ;
 		}
 
-		gsap.to(player.transform.position, {duration:1.5, x:toX, y:toY});
+		gsap.to(this.playerSprite.transform.position, {duration:1.5, x:toX, y:toY});
 	}
 }
 
