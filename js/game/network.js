@@ -144,9 +144,13 @@ class Network{
 
 				if (parseInt(userTurn) === this.cuser.playerNr) {
 					this.cuser.yourTurn = true;
+					$('#main-game').removeClass('pointer-event-none');
+					$('#turn-modal').addClass('hiddenelement');
 					console.log('Your turn!');
 				} else {
 					this.cuser.yourTurn = false;
+					$('#main-game').addClass('pointer-event-none');
+					$('#turn-modal').removeClass('hiddenelement');
 					console.log('Not your turn!');
 				}
 
@@ -195,6 +199,8 @@ class Network{
 		this.cuser.playerNr = 2;
 		this.cuser.yourTurn = false;
 		console.log('Not your turn!');
+		$('#main-game').addClass('pointer-event-none');
+		$('#turn-modal').removeClass('hiddenelement');
 		this.socket.send('JR$' + playerName + '$' + roomKey + '$')
 	}
 

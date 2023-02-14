@@ -42,6 +42,7 @@ html, div, footer, header{
 	overflow: hidden;
 	display: flex;
 	justify-content: center;
+	align-items: center;
 }
 
 .game_main{
@@ -140,6 +141,18 @@ html, div, footer, header{
 
 .footer .content{
 	color: #555;
+}
+
+.pointer-event-none {
+	pointer-events: none;
+}
+
+.turn-modal {
+	padding: 2rem;
+	position: absolute;
+	background-color: aquamarine;
+	color: black;
+	border-radius: 1rem;
 }
 
 .create-room-wrapper {

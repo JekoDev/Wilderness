@@ -19,6 +19,12 @@ class User {
 	id = -1;
 }
 
+turnData = {
+	// types are move, item, or action
+	type: "",
+	value: null
+}
+
 extractParams = function (message) {
 	let params = [];
 
