@@ -153,12 +153,11 @@ wss.on("connection", (socket, req) => {
 
     		break;
     	case "DC":  //Disconnect
-    		for (let r in rooms){
-    			if(r.name == param){
-    				r.users = [];
-    				//r.users.push(users[u]);
-    			}
-    		}
+			wss.clients.forEach(function each(client) {
+				client.send('DC$' + paramArray[0] + "$");
+				console.log('disconnecting from room ' + paramArray[0])
+			});
+
     		break;
     	case "DR":  //Destroy Room
     		   for (let r in rooms){

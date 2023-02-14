@@ -105,14 +105,9 @@ class Network{
 				break;
 			case "RJ": // Room joined
 				let receivedRoom = JSON.parse(paramArray[0]);
-				this.croom.users = receivedRoom.users;
-				let usersNamesInRoom = []
-				this.croom.users.forEach(user => {
-					usersNamesInRoom.push(user.name)
-				})
 
 				// have to do check on client side, which is worse performance-wise
-				if (usersNamesInRoom.includes(this.cuser.username)) {
+				if (this.isUserInRoom(receivedRoom)) {
 					console.log('Room was joined')
 					this.croom.roomKey = receivedRoom.name;
 					this.croom.roomData.mapData = receivedRoom.roomData.mapData;
@@ -159,11 +154,35 @@ class Network{
 				break;
 			case "DC":
 				//Server has ended
+				console.log('disconnecting from ' + JSON.parse(paramArray[0]));
+				if (this.isUserInRoom(JSON.parse(paramArray[0]))) {
+					$('#main-game').addClass('hiddenelement');
+					$('#network-menu').removeClass('hiddenelement');
+					$('#main-game').removeClass('pointer-event-none');
+					$('#turn-modal').addClass('hiddenelement');
+					this.socket.close();
+				}
+
 				break;
 		}
 	}
 
 	setStartingPosition(x, y) {
+	}
+
+	isUserInRoom (room) {
+		this.croom.users = room.users;
+		let userNamesInRoom = [];
+		this.croom.users.forEach(user => {
+			userNamesInRoom.push(user.name)
+		})
+
+		if (userNamesInRoom.includes(this.cuser.username)) {
+			return true
+		} else {
+			return false
+		}
+
 	}
 
 	endTurn() {
@@ -209,7 +228,8 @@ class Network{
 	}
 
 	disconnect(){
-		this.socket.send("DC$"+this.croom);
+		this.socket.send("DC$"+ JSON.stringify(this.croom) + "$");
+		this.socket.close();
 	}
 
 	connect(roomname){

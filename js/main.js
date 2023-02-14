@@ -171,10 +171,15 @@ class Wilderness{
 		wilderness_player.hunger--;
 		wilderness_player.energy--;
 
-		if(this.isDead()) alert("U died!");
-
-		this.updateGUI();
-		wilderness_network.endTurn();
+		if(this.isDead()) {
+			wilderness_network.disconnect();
+			$('#main-game').addClass('hiddenelement');
+			$('#network-menu').removeClass('hiddenelement');
+			alert("U died!");
+		} else {
+			this.updateGUI();
+			wilderness_network.endTurn();
+		}
 	}
 }
 
