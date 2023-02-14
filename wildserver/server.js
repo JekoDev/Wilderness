@@ -91,17 +91,17 @@ wss.on("connection", (socket, req) => {
     		break;
     	case "TT":  //take turn
 			// find what room a turn was taken in
-			let cr = rooms.find(room => room.name = paramArray[1])
+			let cr = rooms.find(room => room.name = paramArray[2])
 
 			if (cr) {
 				if (cr.roomData.playerTurn === 1) {
 					wss.clients.forEach(function each(client) {
-						client.send('YT$'+ 2 + '$');
+						client.send('YT$'+ 2 + '$' + paramArray[0] + '$');
 					});
 					cr.roomData.playerTurn = 2;
 				} else {
 					wss.clients.forEach(function each(client) {
-						client.send('YT$'+ 1 + '$');
+						client.send('YT$'+ 1 + '$' + paramArray[0] + '$');
 					});
 					cr.roomData.playerTurn = 1;
 				}

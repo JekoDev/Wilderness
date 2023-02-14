@@ -165,7 +165,7 @@ class Wilderness{
 		return false;
 	}
 
-	endTurn(){
+	endTurn(turnData){
 		wilderness_round++;
 		wilderness_player.thirst--;
 		wilderness_player.hunger--;
@@ -178,7 +178,8 @@ class Wilderness{
 			alert("U died!");
 		} else {
 			this.updateGUI();
-			wilderness_network.endTurn();
+			console.log(turnData)
+			wilderness_network.endTurn(turnData);
 		}
 	}
 }

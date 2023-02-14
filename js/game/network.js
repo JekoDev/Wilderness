@@ -23,7 +23,7 @@ class Network{
 		roomKey: "",
 		roomData: {
 			mapData: [],
-			playerTurn: 0
+			playerTurn: 2
 		}
 	};
 	ip = "127.0.0.1";
@@ -130,12 +130,14 @@ class Network{
 				//Refresh Rooms
 				break;
 			case "YT":
-				// Receives last turn
+				// Receives last turn data
 				// if you're not the last user who took a turn, it becomes your turn
 				let userTurn = paramArray[0];
+				let turnData = JSON.parse(paramArray[1]);
 
 				if (parseInt(userTurn) === this.cuser.playerNr) {
 					this.cuser.yourTurn = true;
+					this.evaluateTurnData(turnData);
 					$('#main-game').removeClass('pointer-event-none');
 					$('#turn-modal').addClass('hiddenelement');
 					console.log('Your turn!');
@@ -167,6 +169,14 @@ class Network{
 	setStartingPosition(x, y) {
 	}
 
+	evaluateTurnData(data) {
+		switch (data.type) {
+			case 'move':
+				wilderness_player2.setPosEase(data.x, data.y)
+				break;
+		}
+	}
+
 	isUserInRoom (room) {
 		this.croom.users = room.users;
 		let userNamesInRoom = [];
@@ -182,9 +192,9 @@ class Network{
 
 	}
 
-	endTurn() {
+	endTurn(turnData) {
 		// send which user in which room took a turn
-		this.socket.send('TT$' + this.croom.roomData.playerTurn + '$' + this.croom.roomKey + '$');
+		this.socket.send('TT$' + JSON.stringify(turnData) + '$' + this.croom.roomData.playerTurn + '$' + this.croom.roomKey + '$');
 		// thing that signifies that it's not your turn happens
 		// maybe no pointer events on game possible? something like that
 	}

@@ -336,7 +336,13 @@ class Map{
 					}
 					wilderness_map.clearFogR1(x,y);
 					if (wilderness_map.tiles[x][y].type == 4) game.triggerEnd(); //Win
-					game.endTurn();
+					game.endTurn(
+						{
+							type: 'move',
+							x: wilderness_player.x,
+							y: wilderness_player.y
+						}
+					);
 					return;
 				}
 			}
