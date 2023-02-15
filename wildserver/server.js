@@ -10,7 +10,8 @@ class Room {
 	users = [];
 	roomData = {
 		mapData: "",
-		playerTurn: 0
+		playerTurn: 0,
+		item_data: ""
 	};
 }
 
@@ -85,8 +86,9 @@ wss.on("connection", (socket, req) => {
 			currentUser.name = paramArray[1];
 			r.users.push(currentUser);
 			r.roomData.mapData = JSON.parse(paramArray[2]);
+			r.roomData.item_data = JSON.parse(paramArray[3]);
 			r.roomData.playerTurn = 2;
-			socket.send('RC$' + r.name + '$' + JSON.stringify(r.users) + '$' + JSON.stringify(r.roomData.mapData));
+			socket.send('RC$' + r.name + '$' + JSON.stringify(r.users) + '$' + JSON.stringify(r.roomData.mapData) + "$" + JSON.stringify(r.roomData.item_data) + "$");
 			rooms.push(r);
     		break;
     	case "TT":  //take turn

@@ -23,7 +23,8 @@ class Network{
 		roomKey: "",
 		roomData: {
 			mapData: [],
-			playerTurn: 2
+			playerTurn: 2,
+			item_data: []
 		}
 	};
 	ip = "127.0.0.1";
@@ -31,6 +32,7 @@ class Network{
 	server = false;
 	socket = null;
 	connected = false;
+
 
 	//Functions ===============================================
 
@@ -105,17 +107,19 @@ class Network{
 				break;
 			case "RJ": // Room joined
 				let receivedRoom = JSON.parse(paramArray[0]);
+				console.log(receivedRoom);
 
 				// have to do check on client side, which is worse performance-wise
 				if (this.isUserInRoom(receivedRoom)) {
 					console.log('Room was joined')
 					this.croom.roomKey = receivedRoom.name;
 					this.croom.roomData.mapData = receivedRoom.roomData.mapData;
-					// havent been able to pass the exact map data
-					// items are generated on "setData" so theyre not identical
-					// needs fixing
-					this.initSprites()
-					this.setStartingPosition(1, 1);
+					if(this.cuser.playerNr == 2){
+						this.croom.roomData.item_data = receivedRoom.roomData.item_data;
+						this.initSprites()
+						this.setStartingPosition(1, 1);
+					}
+					
 
 					// update GUI
 					this.croom.users.forEach( u => {
@@ -174,6 +178,14 @@ class Network{
 			case 'move':
 				wilderness_player2.setPosEase(data.x, data.y)
 				break;
+			case 'berry':
+				_MapItem_remove(data.x,data.y,"berry");
+				break;
+			case 'sleep':
+				break;
+			case 'water':
+				_MapItem_remove(data.x,data.y,"water");
+				break;
 		}
 	}
 
@@ -211,8 +223,9 @@ class Network{
 		// init map and players
 		this.initSprites();
 		let mapData = JSON.stringify(wilderness_map_data);
+		let itemData = JSON.stringify(this.croom.roomData.item_data);
 		this.setStartingPosition(0, 1);
-		this.socket.send("CR$"+roomname+"$"+username+"$"+mapData+"$");
+		this.socket.send("CR$"+roomname+"$"+username+"$"+mapData+"$"+itemData+"$");
 		console.log(roomname, username);
 		this.server = true;
 	}

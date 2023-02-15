@@ -27,6 +27,9 @@ class Map{
 	tiles = [];
 	width  = 0;
 	height = 0;
+
+	receivedItemList = [];
+
 	static instance = null;
 
 	//Create Map in these dimensions.
@@ -127,6 +130,8 @@ class Map{
 			//later share over network
 		}
 
+		var items_cache = [];
+		var counteritem = 0;
 
 		for(var y=0; y<this.height; y++){
 			for(var x=0; x<this.width; x++){
@@ -204,12 +209,19 @@ class Map{
 
 				//hex.alpha = Math.random();
 				_wilderness_container_tiles.addChild(hex);
+				var randomize = 0;
 
-				var randomize = Math.floor(Math.random()*3);
-				//0 = Sleep
-				//1 = Sleep & Berry
-				//2 = Sleep & Water
-				//3 = Sleep & Berry & Water
+				if (wilderness_network.cuser.playerNr == 1){
+					randomize = Math.floor(Math.random()*3);
+					//0 = Sleep
+					//1 = Sleep & Berry
+					//2 = Sleep & Water
+					//3 = Sleep & Berry & Water
+					wilderness_network.croom.roomData.item_data.push(randomize);
+				}else{
+					randomize = wilderness_network.croom.roomData.item_data[counteritem];
+					counteritem++;
+				}
 
 				//y>60 && x<40 because we do not need the whole Map and it fastens it up drastically
 				if (this.tiles[x][y].type != 3 && this.tiles[x][y].type != 6 && y>60 && x<40){
@@ -276,7 +288,11 @@ class Map{
 				if (wilderness_map.tiles[x][y].sleep == this){
 					if (wilderness_player.x == x && wilderness_player.y == y){
 						wilderness_player.energy += 4;
-						game.endTurn();
+						game.endTurn({
+							type: 'sleep',
+							x: x,
+							y: y
+						});
 						return;
 					}
 				}
@@ -292,7 +308,11 @@ class Map{
 						_wilderness_container_items.removeChild(this);
 						//Add Berry Card
 						game.addCard(1);
-						game.endTurn();
+						game.endTurn({
+							type: 'berry',
+							x: x,
+							y: y
+						});
 						return;
 					}
 				}
@@ -308,11 +328,26 @@ class Map{
 						_wilderness_container_items.removeChild(this);
 						//Add Water Card
 						game.addCard(2);
-						game.endTurn();
+						game.endTurn({
+							type: 'water',
+							x: x,
+							y: y
+						});
 						return;
 					}
 				}
 			}
+		}
+	}
+
+	function _MapItem_remove(x,y,type){
+		switch(type){
+			case 'water':
+				_wilderness_container_items.removeChild(wilderness_map.tiles[x][y].water);
+				break;
+			case 'berry':
+				_wilderness_container_items.removeChild(wilderness_map.tiles[x][y].berry);
+				break;
 		}
 	}
 
